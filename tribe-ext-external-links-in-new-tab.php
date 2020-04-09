@@ -3,9 +3,9 @@
  * Plugin Name:       The Events Calendar Extension: Open external links in a new tab.
  * Plugin URI:        https://theeventscalendar.com/extensions/---the-extension-article-url---/
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-external-links-in-new-tab
- * Description:       Sets some of the event links, such as venue, to open in a new tab.
- * Version:           1.0.0
- * Extension Class:   Tribe\Extensions\External_Links_In_New_Tab\Main
+ * Description:       [Extension Description]
+ * Version:           1.0.2
+ * Extension Class:   Tribe\Extensions\Example\Main
  * Author:            Modern Tribe, Inc.
  * Author URI:        http://m.tri.be/1971
  * License:           GPL version 3 or any later version
@@ -126,7 +126,6 @@ if (
 			// Load plugin textdomain
 			// Don't forget to generate the 'languages/tribe-ext-external-links-in-new-tab.pot' file
 			load_plugin_textdomain( 'tribe-ext-external-links-in-new-tab', false, basename( dirname( __FILE__ ) ) . '/languages/' );
-
 
 			if ( ! $this->php_version_check() ) {
 				return;

@@ -269,23 +269,5 @@ if ( ! class_exists( Settings::class ) ) {
 			return $options;
 		}
 
-		/**
-		 * Here is an example of getting some HTML for the Settings Header.
-		 *
-		 * TODO: Delete this method if you do not need a heading for your settings. Also remove the corresponding element in the the $fields array in the `add_settings()` method above.
-		 *
-		 * @return string
-		 */
-		private function get_example_intro_text() {
-			$result = '<h3>' . esc_html_x( 'Example Extension Setup', 'Settings header', 'tribe-ext-extension-template' ) . '</h3>';
-			$result .= '<div style="margin-left: 20px;">';
-			$result .= '<p>';
-			$result .= esc_html_x( 'Some text here about this settings section.', 'Settings', 'tribe-ext-extension-template' );
-			$result .= '</p>';
-			$result .= '</div>';
-
-			return $result;
-		}
-
 	} // class
 }
