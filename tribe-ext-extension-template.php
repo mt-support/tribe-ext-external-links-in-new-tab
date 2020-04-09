@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       [Base Plugin Name] Extension: [Extension Name]
  * Plugin URI:        https://theeventscalendar.com/extensions/---the-extension-article-url---/
- * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-extension-template
+ * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-external-links-in-new-tab
  * Description:       [Extension Description]
  * Version:           1.0.0
  * Extension Class:   Tribe\Extensions\Example\Main
@@ -10,7 +10,7 @@
  * Author URI:        http://m.tri.be/1971
  * License:           GPL version 3 or any later version
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       tribe-ext-extension-template
+ * Text Domain:       tribe-ext-external-links-in-new-tab
  *
  *     This plugin is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ if (
 		 * @return string
 		 */
 		private function get_options_prefix() {
-			return (string) str_replace( '-', '_', 'tribe-ext-extension-template' );
+			return (string) str_replace( '-', '_', 'tribe-ext-external-links-in-new-tab' );
 		}
 
 		/**
@@ -136,8 +136,8 @@ if (
 		 */
 		public function init() {
 			// Load plugin textdomain
-			// Don't forget to generate the 'languages/tribe-ext-extension-template.pot' file
-			load_plugin_textdomain( 'tribe-ext-extension-template', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+			// Don't forget to generate the 'languages/tribe-ext-external-links-in-new-tab.pot' file
+			load_plugin_textdomain( 'tribe-ext-external-links-in-new-tab', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 
 			if ( ! $this->php_version_check() ) {
 				return;
@@ -189,13 +189,13 @@ if (
 				) {
 					$message = '<p>';
 
-					$message .= sprintf( __( '%s requires PHP version %s or newer to work. Please contact your website host and inquire about updating PHP.', 'tribe-ext-extension-template' ), $this->get_name(), $php_required_version );
+					$message .= sprintf( __( '%s requires PHP version %s or newer to work. Please contact your website host and inquire about updating PHP.', 'tribe-ext-external-links-in-new-tab' ), $this->get_name(), $php_required_version );
 
 					$message .= sprintf( ' <a href="%1$s">%1$s</a>', 'https://wordpress.org/about/requirements/' );
 
 					$message .= '</p>';
 
-					tribe_notice( 'tribe-ext-extension-template' . '-php-version', $message, [ 'type' => 'error' ] );
+					tribe_notice( 'tribe-ext-external-links-in-new-tab' . '-php-version', $message, [ 'type' => 'error' ] );
 				}
 
 				return false;
@@ -234,7 +234,7 @@ if (
 
 			$message .= sprintf( '<p><strong>Bonus!</strong> Get one of our own custom option values: %s</p><p><em>See the code to learn more.</em></p>', $this->get_one_custom_option() );
 
-			tribe_notice( 'tribe-ext-extension-template' . '-hello-world', $message, [ 'type' => 'info' ] );
+			tribe_notice( 'tribe-ext-external-links-in-new-tab' . '-hello-world', $message, [ 'type' => 'info' ] );
 		}
 
 		/**
