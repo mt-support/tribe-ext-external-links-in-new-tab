@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Extensions\Example;
+namespace Tribe\Extensions\External_Links_In_New_Tab;
 
 use Tribe__Settings_Manager;
 
@@ -24,7 +24,7 @@ if ( ! class_exists( Settings::class ) ) {
 		 *
 		 * @var string
 		 */
-		private $options_prefix = '';
+		private $options_prefix = 'tribe_ext_external_links_in_new_tab';
 
 		/**
 		 * Settings constructor.
@@ -37,9 +37,6 @@ if ( ! class_exists( Settings::class ) ) {
 			$this->settings_helper = new Settings_Helper();
 
 			$this->set_options_prefix( $options_prefix );
-
-			// Remove settings specific to Google Maps
-			add_action( 'admin_init', [ $this, 'remove_settings' ] );
 
 			// Add settings specific to OSM
 			add_action( 'admin_init', [ $this, 'add_settings' ] );
@@ -111,6 +108,25 @@ if ( ! class_exists( Settings::class ) ) {
 			$key = $this->sanitize_option_key( $key );
 
 			return tribe_get_option( $key, $default );
+		}
+
+		/**
+		 * Given a link-type, get this extension's option value for it.
+		 *
+		 * This automatically prepends this extension's option prefix so you can just do `$this->get_option( 'a_setting' )`.
+		 *
+		 * @see tribe_get_option()
+		 *
+		 * @param string $key
+		 *
+		 * @return boolean
+		 */
+		public function get_type_option( $option = '' ) {
+			$key = $this->sanitize_option_key( 'link_target_settings' );
+
+			$options = tribe_get_option( $key, [] );
+			
+			return in_array( $option, $options );
 		}
 
 		/**
@@ -193,45 +209,27 @@ if ( ! class_exists( Settings::class ) ) {
 		}
 
 		/**
-		 * Here is an example of removing settings from Events > Settings > General tab > "Map Settings" section
-		 * that are specific to Google Maps.
-		 */
-		public function remove_settings() {
-			// "Enable Google Maps" checkbox
-			$this->settings_helper->remove_field( 'embedGoogleMaps', 'general' );
-			// "Map view search distance limit" (default of 25)
-			$this->settings_helper->remove_field( 'geoloc_default_geofence', 'general' );
-			// "Google Maps default zoom level" (0-21, default of 10)
-			$this->settings_helper->remove_field( 'embedGoogleMapsZoom', 'general' );
-		}
-
-		/**
-		 * Adds a new section of fields to Events > Settings > General tab, appearing after the "Map Settings" section
-		 * and before the "Miscellaneous Settings" section.
-		 *
-		 * TODO: Move it to where you want and update this docblock. If you like it here, just delete this TODO.
+		 * Adds a checkbox for each event link type to the Events > Settings > Display tab,
+		 * as the last before the "Advanced Template Settings" section.
 		 */
 		public function add_settings() {
+			$all_options = $this->get_available_options();
 			$fields = [
-				// TODO: Settings heading start. Remove this element if not needed. Also remove the corresponding `get_example_intro_text()` method below.
-				'Example'   => [
-					'type' => 'html',
-					'html' => $this->get_example_intro_text(),
-				],
-				// TODO: Settings heading end.
-				'a_setting' => [ // TODO
-					'type'            => 'text',
-					'label'           => esc_html__( 'xxx try this', 'tribe-ext-extension-template' ),
-					'tooltip'         => sprintf( esc_html__( 'Enter your custom URL, including "http://" or "https://", for example %s.', 'tribe-ext-extension-template' ), '<code>https://wpshindig.com/events/</code>' ),
-					'validation_type' => 'html',
+				'link_target_settings' => [
+					'default'         => array_keys( $all_options ),
+					'label'           => esc_html__( 'Link Target Control', 'tribe-ext-external-links-in-new-tab' ),
+					'options'         => $all_options,
+					'tooltip'         => esc_html__( 'Select which link types you want to open in a new tab. Note: Unchecking all the boxes will not save. If you want all areas unchecked, just deactivate this extension.', 'tribe-ext-external-links-in-new-tab' ),
+					'type'            => 'checkbox_list',
+					'validation_type' => 'options_multi',
 				],
 			];
 
 			$this->settings_helper->add_fields(
 				$this->prefix_settings_field_keys( $fields ),
-				'general',
-				'tribeEventsMiscellaneousTitle',
-				true
+				'display',
+				'tribeEventsAdvancedSettingsTitle',
+				false
 			);
 		}
 
@@ -253,6 +251,22 @@ if ( ! class_exists( Settings::class ) ) {
 			);
 
 			return (array) $prefixed_fields;
+		}
+
+		/**
+		 * Build options to present to user
+		 *
+		 * @return array
+		 */
+		public function get_available_options() {
+			$options = [
+				'website'   => 'Event website links',
+				'venue'     => 'Event venue website links',
+				'organizer' => 'Event organizer links',
+				'content'   => 'Event content links',
+			];
+
+			return $options;
 		}
 
 		/**

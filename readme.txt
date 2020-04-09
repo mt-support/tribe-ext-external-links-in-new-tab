@@ -1,4 +1,4 @@
-=== [Base Plugin Name] Extension: [Extension Name] ===
+=== [Base Plugin Name] Extension: Open external links in a new tab ===
 Contributors: ModernTribe
 Donate link: http://m.tri.be/29
 Tags: events, calendar
@@ -9,13 +9,12 @@ Stable tag: 1.0.0
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-[Extension Description]
+Open event links in a new tab.
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
-
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and Markdown parsed.
+This extension allows you to set all event website, venue website, organizer website and event content links to open in a new tab. 
+These are controllable by type under Events -> Settings -> Display -> Advanced Template Settings.
 
 == Installation ==
 
@@ -37,6 +36,6 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
-= [1.0.0] YYYY-MM-DD =
+= [1.0.0] TBD =
 
 * Initial release

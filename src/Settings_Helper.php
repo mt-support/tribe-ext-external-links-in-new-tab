@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Extensions\Example;
+namespace Tribe\Extensions\External_Links_In_New_Tab;
 
 use Tribe__Main;
 
