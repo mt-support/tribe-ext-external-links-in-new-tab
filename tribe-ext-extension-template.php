@@ -4,7 +4,7 @@
  * Plugin URI:        https://theeventscalendar.com/extensions/---the-extension-article-url---/
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-extension-template
  * Description:       [Extension Description]
- * Version:           1.0.0
+ * Version:           1.0.1
  * Extension Class:   Tribe\Extensions\Example\Main
  * Author:            Modern Tribe, Inc.
  * Author URI:        http://m.tri.be/1971
