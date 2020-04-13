@@ -1,4 +1,4 @@
-=== [Base Plugin Name] Extension: Open external links in a new tab ===
+=== The Events Calendar Extension: Open external links in a new tab ===
 Contributors: ModernTribe
 Donate link: http://m.tri.be/29
 Tags: events, calendar

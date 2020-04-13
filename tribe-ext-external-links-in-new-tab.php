@@ -241,9 +241,12 @@ if (
 		}
 
 		/**
-		 * Get a single link type option.
+		 * Get a single link type option. 
+		 * These are saved as a json-formatted array, so there is an 
+		 * additional level of nesting we need to get through.
 		 * 
 		 * @since 1.0.0
+		 * @param string $keyThe key of the option you are looking for.
 		 *
 		 * @return mixed
 		 */
