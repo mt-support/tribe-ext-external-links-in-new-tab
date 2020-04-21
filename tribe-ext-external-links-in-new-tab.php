@@ -4,7 +4,7 @@
  * Plugin URI:        https://theeventscalendar.com/extensions/---the-extension-article-url---/
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-external-links-in-new-tab
  * Description:       [Extension Description]
- * Version:           1.0.2
+ * Version:           1.0.0
  * Extension Class:   Tribe\Extensions\External_Links_In_New_Tab\Main
  * Author:            Modern Tribe, Inc.
  * Author URI:        http://m.tri.be/1971
