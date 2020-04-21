@@ -5,7 +5,7 @@
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-external-links-in-new-tab
  * Description:       [Extension Description]
  * Version:           1.0.2
- * Extension Class:   Tribe\Extensions\Example\Main
+ * Extension Class:   Tribe\Extensions\External_Links_In_New_Tab\Main
  * Author:            Modern Tribe, Inc.
  * Author URI:        http://m.tri.be/1971
  * License:           GPL version 3 or any later version
@@ -64,6 +64,7 @@ if (
 		 */
 		public function construct() {
 			// Dependency requirements and class properties can be defined here.
+			$this->add_required_plugin( 'Tribe__Events__Main', '4.4' );
 
 			// Conditionally-require Events Calendar PRO. If it is active, run an extra bit of code.
 			add_action( 'tribe_plugins_loaded', [ $this, 'detect_tec_pro' ], 0 );
@@ -149,7 +150,7 @@ if (
 			}
 
 			if ( ! empty( $this->get_type_option( 'content' ) ) ) {
-				add_filter('the_content', [ $this, 'open_content_links_in_new_tab' ], 999);
+				add_filter( 'the_content', [ $this, 'open_content_links_in_new_tab' ], 999);
 			}
 		}
 
@@ -291,7 +292,7 @@ if (
 					return preg_replace_callback( 
 						'/href=[\'"]+(.*?)[\'"]+/i', 
 						function( $matches2 ) {
-							return sprintf('%s target="_blank" rel="noopener noreferrer"', array_shift( $matches2 ) );
+							return sprintf( '%s target="_blank" rel="noopener noreferrer"', array_shift( $matches2 ) );
 						}, 
 						$tpl 
 					);
