@@ -150,7 +150,7 @@ if (
 			}
 
 			if ( ! empty( $this->get_type_option( 'content' ) ) ) {
-				add_filter( 'the_content', [ $this, 'open_content_links_in_new_tab' ], 999);
+				add_filter( 'the_content', [ $this, 'open_content_links_in_new_tab' ], 999 );
 			}
 		}
 
