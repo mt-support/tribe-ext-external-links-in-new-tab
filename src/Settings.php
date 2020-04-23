@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Extensions\Example;
+namespace Tribe\Extensions\External_Links_In_New_Tab;
 
 use Tribe__Settings_Manager;
 
@@ -12,6 +12,8 @@ if ( ! class_exists( Settings::class ) ) {
 
 		/**
 		 * The Settings Helper class.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @var Settings_Helper
 		 */
@@ -19,17 +21,19 @@ if ( ! class_exists( Settings::class ) ) {
 
 		/**
 		 * The prefix for our settings keys.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @see get_options_prefix() Use this method to get this property's value.
 		 *
 		 * @var string
 		 */
-		private $options_prefix = '';
+		private $options_prefix = 'tribe_ext_external_links_in_new_tab';
 
 		/**
 		 * Settings constructor.
-		 *
-		 * TODO: Update this entire class for your needs, or remove the entire `src` directory this file is in and do not load it in the main plugin file.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @param string $options_prefix Recommended: the plugin text domain, with hyphens converted to underscores.
 		 */
@@ -38,19 +42,18 @@ if ( ! class_exists( Settings::class ) ) {
 
 			$this->set_options_prefix( $options_prefix );
 
-			// Remove settings specific to Google Maps
-			add_action( 'admin_init', [ $this, 'remove_settings' ] );
-
 			// Add settings specific to OSM
 			add_action( 'admin_init', [ $this, 'add_settings' ] );
 		}
 
 		/**
 		 * Allow access to set the Settings Helper property.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @see get_settings_helper()
 		 *
-		 * @param Settings_Helper $helper
+		 * @param Settings_Helper $helper The settings helper (class).
 		 *
 		 * @return Settings_Helper
 		 */
@@ -62,6 +65,8 @@ if ( ! class_exists( Settings::class ) ) {
 
 		/**
 		 * Allow access to get the Settings Helper property.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @see set_settings_helper()
 		 */
@@ -71,9 +76,8 @@ if ( ! class_exists( Settings::class ) ) {
 
 		/**
 		 * Set the options prefix to be used for this extension's settings.
-		 *
-		 * Recommended: the plugin text domain, with hyphens converted to underscores.
-		 * Is forced to end with a single underscore. All double-underscores are converted to single.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @see get_options_prefix()
 		 *
@@ -87,6 +91,8 @@ if ( ! class_exists( Settings::class ) ) {
 
 		/**
 		 * Get this extension's options prefix.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @see set_options_prefix()
 		 *
@@ -100,10 +106,13 @@ if ( ! class_exists( Settings::class ) ) {
 		 * Given an option key, get this extension's option value.
 		 *
 		 * This automatically prepends this extension's option prefix so you can just do `$this->get_option( 'a_setting' )`.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @see tribe_get_option()
 		 *
-		 * @param string $key
+		 * @param string $key     The key of the option you are looking for.
+		 * @param string $default The default value if the option isn't found.
 		 *
 		 * @return mixed
 		 */
@@ -114,9 +123,32 @@ if ( ! class_exists( Settings::class ) ) {
 		}
 
 		/**
-		 * Get an option key after ensuring it is appropriately prefixed.
+		 * Given a link-type, get this extension's option value for it.
 		 *
-		 * @param string $key
+		 * This automatically prepends this extension's option prefix so you can just do `$this->get_option( 'a_setting' )`.
+		 * 
+		 * @since 1.0.0
+		 *
+		 * @see tribe_get_option()
+		 *
+		 * @param string $option The "key" for the option you are looking for.
+		 *
+		 * @return boolean
+		 */
+		public function get_type_option( $option = '' ) {
+			$key = $this->sanitize_option_key( 'link_target_settings' );
+
+			$options = tribe_get_option( $key, [] );
+			
+			return in_array( $option, $options );
+		}
+
+		/**
+		 * Get an option key after ensuring it is appropriately prefixed.
+		 * 
+		 * @since 1.0.0
+		 *
+		 * @param string $key The key for the option you are looking for.
 		 *
 		 * @return string
 		 */
@@ -132,6 +164,8 @@ if ( ! class_exists( Settings::class ) ) {
 
 		/**
 		 * Get an array of all of this extension's options without array keys having the redundant prefix.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -152,6 +186,8 @@ if ( ! class_exists( Settings::class ) ) {
 
 		/**
 		 * Get an array of all of this extension's raw options (i.e. the ones starting with its prefix).
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -177,8 +213,10 @@ if ( ! class_exists( Settings::class ) ) {
 		 * Given an option key, delete this extension's option value.
 		 *
 		 * This automatically prepends this extension's option prefix so you can just do `$this->delete_option( 'a_setting' )`.
+		 * 
+		 * @since 1.0.0
 		 *
-		 * @param string $key
+		 * @param string $key The key for the option you wish to delete.
 		 *
 		 * @return mixed
 		 */
@@ -193,50 +231,36 @@ if ( ! class_exists( Settings::class ) ) {
 		}
 
 		/**
-		 * Here is an example of removing settings from Events > Settings > General tab > "Map Settings" section
-		 * that are specific to Google Maps.
-		 */
-		public function remove_settings() {
-			// "Enable Google Maps" checkbox
-			$this->settings_helper->remove_field( 'embedGoogleMaps', 'general' );
-			// "Map view search distance limit" (default of 25)
-			$this->settings_helper->remove_field( 'geoloc_default_geofence', 'general' );
-			// "Google Maps default zoom level" (0-21, default of 10)
-			$this->settings_helper->remove_field( 'embedGoogleMapsZoom', 'general' );
-		}
-
-		/**
-		 * Adds a new section of fields to Events > Settings > General tab, appearing after the "Map Settings" section
-		 * and before the "Miscellaneous Settings" section.
-		 *
-		 * TODO: Move it to where you want and update this docblock. If you like it here, just delete this TODO.
+		 * Adds a checkbox for each event link type to the Events > Settings > Display tab,
+		 * as the last before the "Advanced Template Settings" section.
+		 * 
+		 * @since 1.0.0
 		 */
 		public function add_settings() {
+			$all_options = $this->get_available_options();
 			$fields = [
-				// TODO: Settings heading start. Remove this element if not needed. Also remove the corresponding `get_example_intro_text()` method below.
-				'Example'   => [
-					'type' => 'html',
-					'html' => $this->get_example_intro_text(),
-				],
-				// TODO: Settings heading end.
-				'a_setting' => [ // TODO
-					'type'            => 'text',
-					'label'           => esc_html__( 'xxx try this', 'tribe-ext-external-links-in-new-tab' ),
-					'tooltip'         => sprintf( esc_html__( 'Enter your custom URL, including "http://" or "https://", for example %s.', 'tribe-ext-external-links-in-new-tab' ), '<code>https://wpshindig.com/events/</code>' ),
-					'validation_type' => 'html',
+				'link_target_settings' => [
+					'default'         => array_keys( $all_options ),
+					'label'           => esc_html__( 'Link Target Control', 'tribe-ext-external-links-in-new-tab' ),
+					'options'         => $all_options,
+					'tooltip'         => esc_html__( 'Select which link types you want to open in a new tab. Note: Unchecking all the boxes will not save. If you want all areas unchecked, just deactivate this extension.', 'tribe-ext-external-links-in-new-tab' ),
+					'type'            => 'checkbox_list',
+					'validation_type' => 'options_multi',
 				],
 			];
 
 			$this->settings_helper->add_fields(
 				$this->prefix_settings_field_keys( $fields ),
-				'general',
-				'tribeEventsMiscellaneousTitle',
-				true
+				'display',
+				'tribeEventsAdvancedSettingsTitle',
+				false
 			);
 		}
 
 		/**
 		 * Add the options prefix to each of the array keys.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @param array $fields
 		 *
@@ -256,21 +280,21 @@ if ( ! class_exists( Settings::class ) ) {
 		}
 
 		/**
-		 * Here is an example of getting some HTML for the Settings Header.
+		 * Build options to present to user.
+		 * 
+		 * @since 1.0.0
 		 *
-		 * TODO: Delete this method if you do not need a heading for your settings. Also remove the corresponding element in the the $fields array in the `add_settings()` method above.
-		 *
-		 * @return string
+		 * @return array
 		 */
-		private function get_example_intro_text() {
-			$result = '<h3>' . esc_html_x( 'Example Extension Setup', 'Settings header', 'tribe-ext-external-links-in-new-tab' ) . '</h3>';
-			$result .= '<div style="margin-left: 20px;">';
-			$result .= '<p>';
-			$result .= esc_html_x( 'Some text here about this settings section.', 'Settings', 'tribe-ext-external-links-in-new-tab' );
-			$result .= '</p>';
-			$result .= '</div>';
+		public function get_available_options() {
+			$options = [
+				'website'   => 'Event website links',
+				'venue'     => 'Event venue website links',
+				'organizer' => 'Event organizer links',
+				'content'   => 'Event content links',
+			];
 
-			return $result;
+			return $options;
 		}
 
 	} // class

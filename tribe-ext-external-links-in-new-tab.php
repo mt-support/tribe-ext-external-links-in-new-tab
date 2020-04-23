@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name:       [Base Plugin Name] Extension: [Extension Name]
+ * Plugin Name:       The Events Calendar Extension: Open external links in a new tab.
  * Plugin URI:        https://theeventscalendar.com/extensions/---the-extension-article-url---/
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-external-links-in-new-tab
  * Description:       [Extension Description]
- * Version:           1.0.1
- * Extension Class:   Tribe\Extensions\Example\Main
+ * Version:           1.0.0
+ * Extension Class:   Tribe\Extensions\External_Links_In_New_Tab\Main
  * Author:            Modern Tribe, Inc.
  * Author URI:        http://m.tri.be/1971
  * License:           GPL version 3 or any later version
@@ -23,7 +23,7 @@
  *     GNU General Public License for more details.
  */
 
-namespace Tribe\Extensions\Example;
+namespace Tribe\Extensions\External_Links_In_New_Tab;
 
 use Tribe__Autoloader;
 use Tribe__Dependency;
@@ -41,16 +41,15 @@ if (
 
 		/**
 		 * @var Tribe__Autoloader
+		 * 
+		 * @since 1.0.0
 		 */
 		private $class_loader;
 
 		/**
-		 * @var Settings
-		 */
-		private $settings;
-
-		/**
 		 * Is Events Calendar PRO active. If yes, we will add some extra functionality.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @return bool
 		 */
@@ -58,30 +57,14 @@ if (
 
 		/**
 		 * Setup the Extension's properties.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * This always executes even if the required plugins are not present.
 		 */
 		public function construct() {
 			// Dependency requirements and class properties can be defined here.
-
-			/**
-			 * Examples:
-			 * All these version numbers are the ones on or after November 16, 2016, but you could remove the version
-			 * number, as it's an optional parameter. Know that your extension code will not run at all (we won't even
-			 * get this far) if you are not running The Events Calendar 4.3.3+ or Event Tickets 4.3.3+, as that is where
-			 * the Tribe__Extension class exists, which is what we are extending.
-			 *
-			 * If using `tribe()`, such as with `Tribe__Dependency`, require TEC/ET version 4.4+ (January 9, 2017).
-			 */
-			// $this->add_required_plugin( 'Tribe__Tickets__Main', '4.4' );
-			// $this->add_required_plugin( 'Tribe__Tickets_Plus__Main', '4.3.3' );
-			// $this->add_required_plugin( 'Tribe__Events__Main', '4.4' );
-			// $this->add_required_plugin( 'Tribe__Events__Pro__Main', '4.3.3' );
-			// $this->add_required_plugin( 'Tribe__Events__Community__Main', '4.3.2' );
-			// $this->add_required_plugin( 'Tribe__Events__Community__Tickets__Main', '4.3.2' );
-			// $this->add_required_plugin( 'Tribe__Events__Filterbar__View', '4.3.3' );
-			// $this->add_required_plugin( 'Tribe__Events__Tickets__Eventbrite__Main', '4.3.2' );
-			// $this->add_required_plugin( 'Tribe_APM', '4.4' );
+			$this->add_required_plugin( 'Tribe__Events__Main', '4.4' );
 
 			// Conditionally-require Events Calendar PRO. If it is active, run an extra bit of code.
 			add_action( 'tribe_plugins_loaded', [ $this, 'detect_tec_pro' ], 0 );
@@ -89,6 +72,8 @@ if (
 
 		/**
 		 * Check required plugins after all Tribe plugins have loaded.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * Useful for conditionally-requiring a Tribe plugin, whether to add extra functionality
 		 * or require a certain version but only if it is active.
@@ -105,12 +90,12 @@ if (
 
 		/**
 		 * Get this plugin's options prefix.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * Settings_Helper will append a trailing underscore before each option.
 		 *
-		 * TODO: Remove if not using Settings.
-		 *
-		 * @see \Tribe\Extensions\Example\Settings::set_options_prefix()
+		 * @see \Tribe\Extensions\Settings::set_options_prefix()
 		 *
 		 * @return string
 		 */
@@ -120,6 +105,8 @@ if (
 
 		/**
 		 * Get Settings instance.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @return Settings
 		 */
@@ -133,6 +120,8 @@ if (
 
 		/**
 		 * Extension initialization and hooks.
+		 * 
+		 * @since 1.0.0
 		 */
 		public function init() {
 			// Load plugin textdomain
@@ -147,15 +136,28 @@ if (
 
 			$this->get_settings();
 
-			// TODO: Just a test. Remove this.
-			$this->testing_hello_world();
-
 			// Insert filter and action hooks here
-			add_filter( 'thing_we_are_filtering', [ $this, 'my_custom_function' ] );
+			if ( ! empty( $this->get_type_option( 'venue' ) ) ) {
+				add_filter( 'tribe_get_venue_website_link_target', [ $this, 'return_blank_link_target' ] );
+			}
+			
+			if ( ! empty( $this->get_type_option( 'website' ) ) ) {
+				add_filter( 'tribe_get_event_website_link_target', [ $this, 'return_blank_link_target' ] );
+			}
+
+			if ( ! empty( $this->get_type_option( 'organizer' ) ) ) {
+				add_filter( 'tribe_get_event_organizer_link_target', [ $this, 'return_blank_link_target' ] );
+			}
+
+			if ( ! empty( $this->get_type_option( 'content' ) ) ) {
+				add_filter( 'the_content', [ $this, 'open_content_links_in_new_tab' ], 999 );
+			}
 		}
 
 		/**
 		 * Check if we have a sufficient version of PHP. Admin notice if we don't and user should see it.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @link https://theeventscalendar.com/knowledgebase/php-version-requirement-changes/ All extensions require PHP 5.6+.
 		 *
@@ -206,8 +208,8 @@ if (
 
 		/**
 		 * Use Tribe Autoloader for all class files within this namespace in the 'src' directory.
-		 *
-		 * TODO: Delete this method and its usage throughout this file if there is no `src` directory, such as if there are no settings being added to the admin UI.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @return Tribe__Autoloader
 		 */
@@ -227,31 +229,9 @@ if (
 		}
 
 		/**
-		 * TODO: Testing Hello World. Delete this for your new extension.
-		 */
-		public function testing_hello_world() {
-			$message = sprintf( '<p>Hello World from %s. Make sure to remove this in your own new extension.</p>', '<strong>' . $this->get_name() . '</strong>' );
-
-			$message .= sprintf( '<p><strong>Bonus!</strong> Get one of our own custom option values: %s</p><p><em>See the code to learn more.</em></p>', $this->get_one_custom_option() );
-
-			tribe_notice( 'tribe-ext-external-links-in-new-tab' . '-hello-world', $message, [ 'type' => 'info' ] );
-		}
-
-		/**
-		 * Demonstration of getting this extension's `a_setting` option value.
-		 *
-		 * TODO: Rework or remove this.
-		 *
-		 * @return mixed
-		 */
-		public function get_one_custom_option() {
-			$settings = $this->get_settings();
-
-			return $settings->get_option( 'a_setting', 'https://theeventscalendar.com/' );
-		}
-
-		/**
 		 * Get all of this extension's options.
+		 * 
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -262,10 +242,77 @@ if (
 		}
 
 		/**
-		 * Include a docblock for every class method and property.
+		 * Get a single link type option. 
+		 * These are saved as a json-formatted array, so there is an 
+		 * additional level of nesting we need to get through.
+		 * 
+		 * @since 1.0.0
+		 * @param string $keyThe key of the option you are looking for.
+		 *
+		 * @return mixed
 		 */
-		public function my_custom_function() {
-			// do your custom stuff
+		public function get_type_option( $key = '' ) {
+			if ( empty( $key ) ) {
+				return false;
+			}
+
+			$settings = $this->get_settings();
+
+			return $settings->get_type_option( $key );
+		}
+
+		/**
+		 * Adds target="_blank" and rel="noopener noreferrer" to links in the content.
+		 * Skips anchor links and ones that already have a target set.
+		 * 
+		 * @since 1.0.0
+		 *
+		 * @param string $content the post content.
+		 * @return string the modified post content.
+		 */
+		function open_content_links_in_new_tab( $content ) {
+			$pattern = '/<a(.*?)?href=[\'"]?[\'"]?(.*?)?>/i';
+		
+			$content = preg_replace_callback( 
+				$pattern, 
+				function( $matches ) {
+					$tpl = array_shift( $matches ) ;
+					$href = isset( $matches[1] ) ? $matches[1] : null;
+			
+					// Ignore anchor links.
+					if ( trim( $href ) && 0 === strpos( $href, '#' ) ) {
+						return $tpl; 
+					}
+			
+					// Ignore links that already have a target set.
+					if ( preg_match( '/target=[\'"]?(.*?)[\'"]?/i', $tpl ) ) {
+						return $tpl;
+					}
+			
+					return preg_replace_callback( 
+						'/href=[\'"]+(.*?)[\'"]+/i', 
+						function( $matches2 ) {
+							return sprintf( '%s target="_blank" rel="noopener noreferrer"', array_shift( $matches2 ) );
+						}, 
+						$tpl 
+					);
+				}, 
+				$content 
+			);
+		
+			return $content;
+		}
+
+		/**
+		 * Returns '_blank' for a link target.
+		 * 
+		 * @since 1.0.0
+		 *
+		 * @param string $target the original target.
+		 * @return string new target.
+		 */
+		public function return_blank_link_target( $target ) {
+			return '_blank';
 		}
 
 	} // end class

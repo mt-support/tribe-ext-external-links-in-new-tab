@@ -1,21 +1,20 @@
-=== [Base Plugin Name] Extension: [Extension Name] ===
+=== The Events Calendar Extension: Open external links in a new tab ===
 Contributors: ModernTribe
 Donate link: http://m.tri.be/29
 Tags: events, calendar
 Requires at least: 4.5
 Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 1.0.1
+Stable tag: 1.0.0
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-[Extension Description]
+Open event links in a new tab.
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
-
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and Markdown parsed.
+This extension allows you to set all event website, venue website, organizer website and event content links to open in a new tab. 
+These are controllable by type under Events -> Settings -> Display -> Advanced Template Settings.
 
 == Installation ==
 
@@ -36,9 +35,6 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 We're always interested in your feedback and our [Help Desk](https://support.theeventscalendar.com/) are the best place to flag any issues. Do note, however, that the degree of support we provide for extensions like this one tends to be very limited.
 
 == Changelog ==
-
-= [1.0.1] 2020-04-09 =
-* Test version change.
 
 = [1.0.0] 2020-04-09 =
 
