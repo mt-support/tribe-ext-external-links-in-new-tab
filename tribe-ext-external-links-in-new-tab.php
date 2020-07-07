@@ -309,8 +309,13 @@ if (
 		}
 
 		public function is_local_link( $url ) {
-			$url_components   = parse_url($url);
-			$local_components = parse_url( home_url() );
+			$url_components   = wp_parse_url($url);
+			$local_components = wp_cache_get( 'tribe_parse_home_url' );
+
+			if ( empty( $local_components ) ) {
+				$local_components = wp_parse_url( home_url() );
+				wp_cache_set( 'tribe_parse_home_url', $local_components );
+			}
 
 			if ( empty( $url_components['host'] ) ) {
 				return true;  // Relative URL like '/relative.php' or '/' is local.
