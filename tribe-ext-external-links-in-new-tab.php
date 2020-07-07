@@ -309,7 +309,7 @@ if (
 		}
 
 		public function is_local_link( $url ) {
-			$url_components   = parse_url($url);
+			$url_components   = wp_parse_url( $url );
 			$local_components = parse_url( home_url() );
 
 			if ( empty( $url_components['host'] ) ) {
