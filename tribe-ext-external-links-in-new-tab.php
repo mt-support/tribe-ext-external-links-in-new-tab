@@ -310,11 +310,11 @@ if (
 
 		public function is_local_link( $url ) {
 			$url_components   = wp_parse_url($url);
-			$local_components = wp_cache_get( 'tribe_parse_home_url' );
+			$local_components = tribe_cache()->get( 'tribe_parse_home_url' );
 
 			if ( empty( $local_components ) ) {
 				$local_components = wp_parse_url( home_url() );
-				wp_cache_set( 'tribe_parse_home_url', $local_components );
+				tribe_cache()->set( 'tribe_parse_home_url', $local_components );
 			}
 
 			if ( empty( $url_components['host'] ) ) {
