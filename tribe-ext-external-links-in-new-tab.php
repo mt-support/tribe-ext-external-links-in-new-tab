@@ -41,14 +41,14 @@ if (
 
 		/**
 		 * @var Tribe__Autoloader
-		 * 
+		 *
 		 * @since 1.0.0
 		 */
 		private $class_loader;
 
 		/**
 		 * Is Events Calendar PRO active. If yes, we will add some extra functionality.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * @return bool
@@ -57,7 +57,7 @@ if (
 
 		/**
 		 * Setup the Extension's properties.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * This always executes even if the required plugins are not present.
@@ -72,7 +72,7 @@ if (
 
 		/**
 		 * Check required plugins after all Tribe plugins have loaded.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * Useful for conditionally-requiring a Tribe plugin, whether to add extra functionality
@@ -90,7 +90,7 @@ if (
 
 		/**
 		 * Get this plugin's options prefix.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * Settings_Helper will append a trailing underscore before each option.
@@ -105,7 +105,7 @@ if (
 
 		/**
 		 * Get Settings instance.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * @return Settings
@@ -120,7 +120,7 @@ if (
 
 		/**
 		 * Extension initialization and hooks.
-		 * 
+		 *
 		 * @since 1.0.0
 		 */
 		public function init() {
@@ -138,15 +138,15 @@ if (
 
 			// Insert filter and action hooks here
 			if ( ! empty( $this->get_type_option( 'venue' ) ) ) {
-				add_filter( 'tribe_get_venue_website_link_target', [ $this, 'return_blank_link_target' ] );
+				add_filter( 'tribe_get_venue_website_link_target', [ $this, 'return_blank_link_target' ], 10, 2 );
 			}
-			
+
 			if ( ! empty( $this->get_type_option( 'website' ) ) ) {
-				add_filter( 'tribe_get_event_website_link_target', [ $this, 'return_blank_link_target' ] );
+				add_filter( 'tribe_get_event_website_link_target', [ $this, 'return_blank_link_target' ], 10, 2 );
 			}
 
 			if ( ! empty( $this->get_type_option( 'organizer' ) ) ) {
-				add_filter( 'tribe_get_event_organizer_link_target', [ $this, 'return_blank_link_target' ] );
+				add_filter( 'tribe_get_event_organizer_link_target', [ $this, 'return_blank_link_target' ], 10, 2 );
 			}
 
 			if ( ! empty( $this->get_type_option( 'content' ) ) ) {
@@ -156,7 +156,7 @@ if (
 
 		/**
 		 * Check if we have a sufficient version of PHP. Admin notice if we don't and user should see it.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * @link https://theeventscalendar.com/knowledgebase/php-version-requirement-changes/ All extensions require PHP 5.6+.
@@ -208,7 +208,7 @@ if (
 
 		/**
 		 * Use Tribe Autoloader for all class files within this namespace in the 'src' directory.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * @return Tribe__Autoloader
@@ -230,7 +230,7 @@ if (
 
 		/**
 		 * Get all of this extension's options.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * @return array
@@ -242,10 +242,10 @@ if (
 		}
 
 		/**
-		 * Get a single link type option. 
-		 * These are saved as a json-formatted array, so there is an 
+		 * Get a single link type option.
+		 * These are saved as a json-formatted array, so there is an
 		 * additional level of nesting we need to get through.
-		 * 
+		 *
 		 * @since 1.0.0
 		 * @param string $keyThe key of the option you are looking for.
 		 *
@@ -264,7 +264,7 @@ if (
 		/**
 		 * Adds target="_blank" and rel="noopener noreferrer" to links in the content.
 		 * Skips anchor links and ones that already have a target set.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * @param string $content the post content.
@@ -272,46 +272,79 @@ if (
 		 */
 		function open_content_links_in_new_tab( $content ) {
 			$pattern = '/<a(.*?)?href=[\'"]?[\'"]?(.*?)?>/i';
-		
-			$content = preg_replace_callback( 
-				$pattern, 
+
+			$content = preg_replace_callback(
+				$pattern,
 				function( $matches ) {
 					$tpl = array_shift( $matches ) ;
 					$href = isset( $matches[1] ) ? $matches[1] : null;
-			
+
 					// Ignore anchor links.
 					if ( trim( $href ) && 0 === strpos( $href, '#' ) ) {
-						return $tpl; 
+						return $tpl;
 					}
-			
+
+					// Ignore local links.
+					if ( $this->is_local_link( $href ) ) {
+						return $tpl;
+					}
+
 					// Ignore links that already have a target set.
 					if ( preg_match( '/target=[\'"]?(.*?)[\'"]?/i', $tpl ) ) {
 						return $tpl;
 					}
-			
-					return preg_replace_callback( 
-						'/href=[\'"]+(.*?)[\'"]+/i', 
+
+					return preg_replace_callback(
+						'/href=[\'"]+(.*?)[\'"]+/i',
 						function( $matches2 ) {
 							return sprintf( '%s target="_blank" rel="noopener noreferrer"', array_shift( $matches2 ) );
-						}, 
-						$tpl 
+						},
+						$tpl
 					);
-				}, 
-				$content 
+				},
+				$content
 			);
-		
+
 			return $content;
+		}
+
+		public function is_local_link( $url ) {
+			$url_components   = wp_parse_url($url);
+			$local_components = tribe_cache()->get( 'tribe_parse_home_url' );
+
+			if ( empty( $local_components ) ) {
+				$local_components = wp_parse_url( home_url() );
+				tribe_cache()->set( 'tribe_parse_home_url', $local_components );
+			}
+
+			if ( empty( $url_components['host'] ) ) {
+				return true;  // Relative URL like '/relative.php' or '/' is local.
+			}
+
+			if ( strcasecmp( $url_components['host'], $local_components['host'] ) === 0 ) {
+				return true; // URL host looks exactly like the local host.
+			}
+
+			if ( false !== strrpos( strtolower( $url_components['host'] ), '.' . $local_components['host'] ) ) {
+				return true; // URL is a subdomain of local host.
+			}
+
+			return false;
 		}
 
 		/**
 		 * Returns '_blank' for a link target.
-		 * 
+		 *
 		 * @since 1.0.0
 		 *
 		 * @param string $target the original target.
 		 * @return string new target.
 		 */
-		public function return_blank_link_target( $target ) {
+		public function return_blank_link_target( $target, $url ) {
+			if ( ! $this->is_local_link( $url ) ) {
+				return $target;
+			}
+
 			return '_blank';
 		}
 
