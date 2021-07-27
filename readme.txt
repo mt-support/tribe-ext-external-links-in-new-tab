@@ -36,6 +36,10 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
+= [1.0.1] TBD =
+
+* Fix - Make sure external links open in a new tab instead of local links
+
 = [1.0.0] 2020-04-09 =
 
 * Initial release
