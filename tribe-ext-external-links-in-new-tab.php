@@ -341,7 +341,7 @@ if (
 		 * @return string new target.
 		 */
 		public function return_blank_link_target( $target, $url ) {
-			if ( ! $this->is_local_link( $url ) ) {
+			if ( $this->is_local_link( $url ) ) {
 				return $target;
 			}
 
