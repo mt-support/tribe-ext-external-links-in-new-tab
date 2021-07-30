@@ -4,7 +4,7 @@
  * Plugin URI:        https://theeventscalendar.com/extensions/external-event-links-in-a-new-tab/
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-external-links-in-new-tab
  * Description:       This extension provides settings that force all external event links or specific link types to open in a new browser tab.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Extension Class:   Tribe\Extensions\External_Links_In_New_Tab\Main
  * Author:            The Events Calendar
  * Author URI:        https://evnt.is/1971
